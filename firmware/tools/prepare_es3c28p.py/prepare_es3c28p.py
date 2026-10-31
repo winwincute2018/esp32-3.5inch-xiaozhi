@@ -13,7 +13,7 @@ ini = ROOT / "platformio.ini"
 text = ini.read_text(encoding="utf-8")
 replacements = {
     "board = esp32dev": "board = esp32-s3-devkitc-1\nboard_build.flash_size = 16MB\nboard_build.arduino.memory_type = qio_opi\nboard_build.partitions = partitions_es3c28p.csv",
-    "board_build.f_flash = 80000000L": "board_build.f_flash = 40000000L",
+    "board_build.f_flash = 80000000L": "board_build.f_flash = 80000000L",
     "board_build.partitions = huge_app.csv": "",
     "-DST7796_DRIVER=1": "-DILI9341_DRIVER=1",
     "-DTFT_WIDTH=320": "-DTFT_WIDTH=240",
@@ -48,7 +48,8 @@ ini.write_text(text, encoding="utf-8")
     encoding="utf-8",
 )
 
-main = ROOT / "src" / "main.cpp"
+main = ROOT / "src" / "main.cpp"; replace_once(main, "  WRITE_PERI_REG(SPI_CTRL2_REG(2), 0);  // SPI2 = HSPI, the display bus
+", "")
 replace_once(main, "#include <SD.h>\n", "#include <SD.h>\n#include <SD_MMC.h>\n#define SD SD_MMC\n")
 replace_once(main, "static const int PIN_BL = 27;", "static const int PIN_BL = 45;")
 replace_once(main, "static SPIClass sdSPI(VSPI);  // TF slot: CS5 SCK18 MISO19 MOSI23 (VSPI's native pins; HSPI drives the display)\n", "")
