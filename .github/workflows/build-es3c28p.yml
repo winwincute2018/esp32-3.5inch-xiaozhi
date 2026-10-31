@@ -28,7 +28,7 @@ jobs:
           test -f "$BUILD/bootloader.bin"
           test -f "$BUILD/partitions.bin"
           test -f "$BUILD/firmware.bin"
-          python -m esptool --chip esp32s3 merge-bin -o "$BUILD/firmware-es3c28p.bin" -f raw --flash-mode dio --flash-freq 40m --flash-size 16MB 0x1000 "$BUILD/bootloader.bin" 0x8000 "$BUILD/partitions.bin" 0x10000 "$BUILD/firmware.bin"
+          python -m esptool --chip esp32s3 merge-bin -o "$BUILD/firmware-es3c28p.bin" -f raw --flash-mode dio --flash-freq 80m --flash-size 16MB 0x1000 "$BUILD/bootloader.bin" 0x8000 "$BUILD/partitions.bin" 0x10000 "$BUILD/firmware.bin"
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v4
         with:
