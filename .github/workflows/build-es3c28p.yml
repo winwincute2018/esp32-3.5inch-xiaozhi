@@ -1,0 +1,38 @@
+name: Build ES3C28P firmware
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout fork on GitHub runner
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install PlatformIO and esptool
+        run: python -m pip install --upgrade platformio esptool
+      - name: Apply ES3C28P hardware port
+        run: python firmware/tools/prepare_es3c28p.py/prepare_es3c28p.py
+      - name: Build firmware
+        run: pio run -d firmware -e esp32-035
+      - name: Merge flash image
+        run: |
+          BUILD=firmware/.pio/build/esp32-035
+          test -f "$BUILD/bootloader.bin"
+          test -f "$BUILD/partitions.bin"
+          test -f "$BUILD/firmware.bin"
+          python -m esptool --chip esp32s3 merge-bin -o "$BUILD/firmware-es3c28p.bin" -f raw --flash-mode dio --flash-freq 40m --flash-size 16MB 0x1000 "$BUILD/bootloader.bin" 0x8000 "$BUILD/partitions.bin" 0x10000 "$BUILD/firmware.bin"
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware-es3c28p-landscape
+          path: firmware/.pio/build/esp32-035/firmware-es3c28p.bin
+          if-no-files-found: error
+          retention-days: 14
