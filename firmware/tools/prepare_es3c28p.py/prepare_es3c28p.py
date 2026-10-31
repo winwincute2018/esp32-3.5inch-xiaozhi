@@ -12,7 +12,7 @@ def replace_once(path, old, new):
 ini = ROOT / "platformio.ini"
 text = ini.read_text(encoding="utf-8")
 replacements = {
-    "board = esp32dev": "board = esp32s3\nboard_build.flash_size = 16MB\nboard_build.arduino.memory_type = qio_opi",
+    "board = esp32dev": "board = esp32s3\nboard_build.flash_size = 16MB\nboard_build.arduino.memory_type = qio_opi\nboard_build.partitions = partitions_es3c28p.csv",
     "board_build.f_flash = 80000000L": "board_build.f_flash = 40000000L",
     "board_build.partitions = huge_app.csv": "",
     "-DST7796_DRIVER=1": "-DILI9341_DRIVER=1",
@@ -36,7 +36,6 @@ for old, new in replacements.items():
 text = text.replace("board_build.partitions = huge_app.csv\n", "", 1)
 if "board_build.partitions = partitions_es3c28p.csv" not in text:
     raise SystemExit("Missing ES3C28P partition setting")
-text = text.replace("board_build.partitions = partitions_es3c28p.csv", "board_build.partitions = partitions_es3c28p.csv", 1)
 ini.write_text(text, encoding="utf-8")
 
 (ROOT / "partitions_es3c28p.csv").write_text(
@@ -129,7 +128,6 @@ static bool touchLoadCal() { return true; }
 static void touchCalibrate() {}
 '''
 (ROOT / "src" / "touch.h").write_text(touch, encoding="utf-8")
-
 config = ROOT / "src" / "config.h"
 replace_once(config, "static bool appInLauncher(int id) { return id != 0 && id != 4 && id != 5 && id != 7; }", "static bool appInLauncher(int id) { return id != 0 && id != 4 && id != 5 && id != 7 && id != 9; }")
 replace_once(config, 'static const char *APPS_DEFAULT = "2,1,8,10,14,15,11,12,13,9,3,6";', 'static const char *APPS_DEFAULT = "2,1,8,10,14,15,11,12,13,3,6";')
