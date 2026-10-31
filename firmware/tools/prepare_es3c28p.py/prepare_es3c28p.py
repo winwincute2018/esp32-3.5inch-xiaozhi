@@ -12,7 +12,7 @@ def replace_once(path, old, new):
 ini = ROOT / "platformio.ini"
 text = ini.read_text(encoding="utf-8")
 replacements = {
-    "board = esp32dev": "board = esp32s3\nboard_build.flash_size = 16MB\nboard_build.arduino.memory_type = qio_opi\nboard_build.partitions = partitions_es3c28p.csv",
+    "board = esp32dev": "board = esp32-s3-devkitc-1\nboard_build.flash_size = 16MB\nboard_build.arduino.memory_type = qio_opi\nboard_build.partitions = partitions_es3c28p.csv",
     "board_build.f_flash = 80000000L": "board_build.f_flash = 40000000L",
     "board_build.partitions = huge_app.csv": "",
     "-DST7796_DRIVER=1": "-DILI9341_DRIVER=1",
