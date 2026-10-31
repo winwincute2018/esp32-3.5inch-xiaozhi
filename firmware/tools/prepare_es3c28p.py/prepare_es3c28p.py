@@ -79,7 +79,7 @@ flush = r'''static void dispFlush(lv_disp_drv_t *drv, const lv_area_t *a, lv_col
   }
   lv_disp_flush_ready(drv);
 }'''
-main.write_text(text[:start] + flush + text[end:], encoding="utf-8")
+main.write_text(text[:start] + flush + text[end:], encoding="utf-8"); audio = ROOT / "src" / "audio.h"; replace_once(audio, "#include <driver/dac.h>", "#if defined(CONFIG_IDF_TARGET_ESP32)" + chr(10) + "#include <driver/dac.h>"); replace_once(audio, "#include <driver/rtc_io.h>", "#include <driver/rtc_io.h>" + chr(10) + "#endif"); audio_text = audio.read_text(encoding="utf-8"); audio_start = audio_text.index("static bool audioDriverUp(bool up) {"); audio_end = audio_text.index(chr(10) + "// Around the DC level", audio_start); audio_driver = audio_text[audio_start:audio_end]; audio_text = audio_text[:audio_start] + "#if defined(CONFIG_IDF_TARGET_ESP32)" + chr(10) + audio_driver + chr(10) + "#else" + chr(10) + "static bool audioDriverUp(bool up) {" + chr(10) + "  if (!up) return true;" + chr(10) + "  static bool warned = false;" + chr(10) + "  if (!warned) { Serial.println(\"AUDIO output disabled: ES8311/I2S playback is not ported yet.\"); warned = true; }" + chr(10) + "  return false;" + chr(10) + "}" + chr(10) + "#endif" + chr(10) + audio_text[audio_end:]; audio.write_text(audio_text, encoding="utf-8")
 
 touch = r'''#pragma once
 #include <Arduino.h>
