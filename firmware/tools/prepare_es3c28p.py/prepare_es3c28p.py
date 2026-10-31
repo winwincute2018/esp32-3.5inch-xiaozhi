@@ -41,7 +41,7 @@ ini.write_text(text, encoding="utf-8")
 (ROOT / "partitions_es3c28p.csv").write_text(
     "# Name, Type, SubType, Offset, Size, Flags\n"
     "nvs, data, nvs, 0x9000, 0x5000,\n"
-    "otadata, data, ota, 0xe000, 0x2000,\n"
+    "# OTA metadata omitted (single factory app)\n"
     "phy_init, data, phy, 0xf000, 0x1000,\n"
     "factory, app, factory, 0x10000, 0x700000,\n"
     "storage, data, spiffs, 0x710000, 0x8F0000,\n",
